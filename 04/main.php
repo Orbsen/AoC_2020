@@ -1,7 +1,7 @@
 <?php
 
 /**
- * ich bin off bei 1 bei der zweiten Lösung .. warscheinlich irgendein Edgecase noch nicht abgedeckt
+ * ich bin off bei 1 bei der zweiten Lösung, wahrscheinlich irgendein Edgecase noch nicht abgedeckt
  * leider noch nicht gefunden welcher dies sein sollte
  */
 
@@ -11,10 +11,10 @@ $eclColors = ['amb', 'blu', 'brn', 'gry', 'grn', 'hzl', 'oth'];
 $result1 = checkPassports1($passports);
 $result2 = checkPassports2($passports, $eclColors);
 
-echo 'Solution Day 4-1: '.$result1.'<br />';
-echo 'Solution Day 4-2: '.$result2.'<br />';
+echo 'Solution Day 4-1: ' . $result1 . '<br />';
+echo 'Solution Day 4-2: ' . $result2 . '<br />';
 
-function convertToArray ($rows): array
+function convertToArray($rows): array
 {
     $return = [];
     $counter = 0;
@@ -44,7 +44,7 @@ function checkPassports1($passports): int
         $pid = array_key_exists('pid', $passport);
         $hcl = array_key_exists('hcl', $passport);
         $hgt = array_key_exists('hgt', $passport);
-        $cit = array_key_exists('cit', $passport);
+//        $cit = array_key_exists('cit', $passport);
 
         if ($eyr && $iyr && $byr && $ecl && $pid && $hcl && $hgt) {
             $counter++;
@@ -67,22 +67,13 @@ function checkPassports2($passports, $eclColors): int
         $hcl = false;
         $hgt = false;
 
-        echo '<pre>';
-        print_r($passport);
-        echo '<pre />';
-
-        if (
-            array_key_exists('hgt', $passport) &&
-            str_contains($passport['hgt'], 'cm') &&
-            in_array(substr($passport['hgt'], 0, -2), range(150, 193))
-        ) {
-            $hgt = true;
-        } elseif (
-            array_key_exists('hgt', $passport) &&
-            str_contains($passport['hgt'], 'in') &&
-            in_array(substr($passport['hgt'], 0, -2), range(59, 76))
-        ) {
-            $hgt = true;
+        if (array_key_exists('hgt', $passport) && preg_match('/([0-9]+)(in|cm)/', $passport['hgt'], $matches)) {
+            if ($matches[2] == 'in' && in_array($matches[1], range(59, 76))) {
+                $hgt = true;
+            }
+            if ($matches[2] == 'cm' && in_array($matches[1], range(150, 193))) {
+                $hgt = true;
+            }
         }
 
         if (array_key_exists('eyr', $passport) && in_array($passport['eyr'], range(2020, 2030))) {
